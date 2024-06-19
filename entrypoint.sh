@@ -10,5 +10,9 @@ done
 cd /app
 python manage.py migrate
 
+# Fetch characters from API
+python manage.py fetch_characters  
+
+
 # Start Django server
 exec "$@"
