@@ -38,7 +38,7 @@ class Character(models.Model):
     def is_evil(self):
         if "Darth" in self.name or "Sith" in self.name:
             return True
-        if any("Darth" in aff or "Sith" in aff for aff in self.affiliations):
+        if self.affiliations and any("Darth" in aff or "Sith" in aff for aff in self.affiliations):
             return True
         if self.masters and any("Darth" in master for master in self.masters):
             return True
