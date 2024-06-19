@@ -13,7 +13,14 @@ class CharacterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Character
-        fields = "__all__"
+        fields = [
+            "id",
+            "name",
+            "image",
+            "height",
+            "mass",
+            "affiliations",
+        ]  # Add other fields as necessary
 
 
 class TeamSerializer(serializers.ModelSerializer):
@@ -53,4 +60,3 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Add custom claims
         token["username"] = user.username
         return token
-    
