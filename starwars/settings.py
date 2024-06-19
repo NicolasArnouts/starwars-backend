@@ -38,6 +38,8 @@ DEBUG = env("DEBUG", default=True)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
+# Does not require the url to end with a slash
+APPEND_SLASH = True
 
 # Application definition
 
