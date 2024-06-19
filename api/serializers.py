@@ -6,21 +6,24 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Character, Team
 
 
-class CharacterSerializer(serializers.ModelSerializer):
+class CharacterBasicSerializer(serializers.ModelSerializer):
     """
-    Serializer for Character model.
+    Serializer for basic Character info.
     """
 
     class Meta:
         model = Character
-        fields = [
-            "id",
-            "name",
-            "image",
-            "height",
-            "mass",
-            "affiliations",
-        ]  # Add other fields as necessary
+        fields = ["id", "name", "image", "height", "mass", "affiliations"]
+
+
+class CharacterFullSerializer(serializers.ModelSerializer):
+    """
+    Serializer for full Character info.
+    """
+
+    class Meta:
+        model = Character
+        fields = "__all__"
 
 
 class TeamSerializer(serializers.ModelSerializer):
@@ -28,7 +31,7 @@ class TeamSerializer(serializers.ModelSerializer):
     Serializer for Team model.
     """
 
-    members = CharacterSerializer(many=True, read_only=True)
+    members = CharacterBasicSerializer(many=True, read_only=True)
 
     class Meta:
         model = Team

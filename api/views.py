@@ -8,14 +8,36 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
 from rest_framework_simplejwt.views import TokenObtainPairView
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
+
 
 from .models import Character, Team
 from .serializers import (
-    CharacterSerializer,
+    CharacterBasicSerializer,
+    CharacterFullSerializer,
     TeamSerializer,
     MyTokenObtainPairSerializer,
 )
+
+
+class CharacterFilter(FilterSet):
+    name = CharFilter(field_name="name", lookup_expr="icontains")
+
+    class Meta:
+        model = Character
+        fields = [
+            "name",
+            "height",
+            "mass",
+            "gender",
+            "homeworld",
+            "species",
+            "hairColor",
+            "eyeColor",
+            "skinColor",
+            "born",
+            "died",
+        ]
 
 
 class CharacterViewSet(viewsets.ModelViewSet):
@@ -25,21 +47,13 @@ class CharacterViewSet(viewsets.ModelViewSet):
 
     permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Character.objects.all()
-    serializer_class = CharacterSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = [
-        "name",
-        "height",
-        "mass",
-        "gender",
-        "homeworld",
-        "species",
-        "hairColor",
-        "eyeColor",
-        "skinColor",
-        "born",
-        "died",
-    ]
+    filterset_class = CharacterFilter
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return CharacterBasicSerializer
+        return CharacterFullSerializer
 
     def list(self, request):
         """
@@ -75,17 +89,6 @@ class CharacterViewSet(viewsets.ModelViewSet):
                 {"status": "error", "message": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-
-    def get_queryset(self):
-        """
-        Optionally restricts the returned characters,
-        by filtering against query parameters in the URL.
-        """
-        try:
-            queryset = Character.objects.all()
-            return queryset
-        except Exception as e:
-            raise DRFValidationError(f"Invalid query parameter: {e}")
 
 
 class TeamViewSet(viewsets.ModelViewSet):
