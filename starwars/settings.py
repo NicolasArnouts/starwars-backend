@@ -16,9 +16,16 @@ import environ
 # Initialize environment variables
 env = environ.Env()
 
-# Read .env file
-environ.Env.read_env(env_file=".env")
+# Determine which .env file to use
+ENVIRONMENT = env("ENVIRONMENT", default="local")
 
+if ENVIRONMENT == "docker":
+    env_file = ".env.docker"
+else:
+    env_file = ".env.local"
+
+# Read the .env file
+environ.Env.read_env(env_file=env_file)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -87,7 +94,6 @@ WSGI_APPLICATION = "starwars.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
