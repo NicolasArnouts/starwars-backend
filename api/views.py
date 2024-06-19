@@ -1,10 +1,13 @@
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.contrib.auth import authenticate
+
 from rest_framework import viewsets, status, serializers
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound, ValidationError as DRFValidationError
+
 from rest_framework_simplejwt.views import TokenObtainPairView
-from django.core.exceptions import ValidationError as DjangoValidationError
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Character, Team
 from .serializers import (
@@ -21,6 +24,20 @@ class CharacterViewSet(viewsets.ModelViewSet):
 
     queryset = Character.objects.all()
     serializer_class = CharacterSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = [
+        "name",
+        "height",
+        "mass",
+        "gender",
+        "homeworld",
+        "species",
+        "hairColor",
+        "eyeColor",
+        "skinColor",
+        "born",
+        "died",
+    ]
 
     def list(self, request):
         """
@@ -60,13 +77,10 @@ class CharacterViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """
         Optionally restricts the returned characters,
-        by filtering against a `name` query parameter in the URL.
+        by filtering against query parameters in the URL.
         """
         try:
             queryset = Character.objects.all()
-            name = self.request.query_params.get("name", None)
-            if name:
-                queryset = queryset.filter(name__icontains=name)
             return queryset
         except Exception as e:
             raise DRFValidationError(f"Invalid query parameter: {e}")
