@@ -1,10 +1,11 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.contrib.auth import authenticate
 
 from rest_framework import viewsets, status, serializers
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound, ValidationError as DRFValidationError
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django_filters.rest_framework import DjangoFilterBackend
@@ -22,6 +23,7 @@ class CharacterViewSet(viewsets.ModelViewSet):
     A simple ViewSet for listing or retrieving Characters.
     """
 
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Character.objects.all()
     serializer_class = CharacterSerializer
     filter_backends = [DjangoFilterBackend]
@@ -91,6 +93,7 @@ class TeamViewSet(viewsets.ModelViewSet):
     A ViewSet for listing, retrieving, creating, and updating teams.
     """
 
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
 
