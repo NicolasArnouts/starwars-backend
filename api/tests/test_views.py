@@ -55,13 +55,13 @@ class CharacterViewSetTest(APITestCase):
 class TeamViewSetTest(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="testuser", password="testpass")
+        self.admin_user = User.objects.create_superuser(
+            username="adminuser", password="adminpass"
+        )
         login_successful = self.client.login(username="testuser", password="testpass")
+        print(login_successful)
 
-        # Debug statements
-        if not login_successful:
-            print("Login failed")
-        else:
-            print("Login successfull")
+        self.client.login(username="adminuser", password="adminpass")
 
         self.team = Team.objects.create()
         self.character = Character.objects.create(
@@ -75,6 +75,19 @@ class TeamViewSetTest(APITestCase):
         self.evil_character = Character.objects.create(
             id=2, name="Darth Vader", affiliations=["Sith"]
         )
+
+    def test_delete_team(self):
+        url = reverse("team-detail", args=[self.team.id])
+        self.client.login(username="adminuser", password="adminpass")
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Team.objects.filter(id=self.team.id).exists())
+
+    def test_delete_team_unauthorized(self):
+        url = reverse("team-detail", args=[self.team.id])
+        self.client.login(username="testuser", password="testpass")
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_team(self):
         url = reverse("team-list")

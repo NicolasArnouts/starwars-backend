@@ -3,7 +3,11 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import viewsets, status, serializers
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotFound, ValidationError as DRFValidationError
+from rest_framework.exceptions import (
+    NotFound,
+    ValidationError as DRFValidationError,
+    PermissionDenied,
+)
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
@@ -113,6 +117,18 @@ class TeamViewSet(viewsets.ModelViewSet):
                 {"status": "error", "message": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Delete a team if authorized.
+        """
+        team = self.get_object()
+        print("team: ", team)
+        if not request.user.is_staff:
+            raise PermissionDenied("You do not have permission to delete this team.")
+
+        team.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=["post"])
     def add_member(self, request, pk=None):
