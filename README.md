@@ -60,6 +60,9 @@ This project is a backend service for managing Star Wars characters and teams. I
 5. Create a superuser:
   [Creating a Superuser](#creating-a-superuser)
 
+6. Optional: (re)Fetch data:
+   [Fetching Characters](#fetching-characters)
+
 #### Manual Installation
 
 1. Clone the repository:
@@ -143,7 +146,7 @@ The project requires the following environment variables to be set:
 To run the project, use Docker Compose:
 
 ```bash
-docker-compose up
+docker-compose up -d
 ```
 
 ### Accessing the API
