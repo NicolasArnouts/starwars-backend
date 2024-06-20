@@ -17,12 +17,14 @@ import environ
 env = environ.Env()
 
 # Determine which .env file to use
-ENVIRONMENT = env("ENVIRONMENT", default="local")
+ENVIRONMENT = env("ENVIRONMENT", default="none")
 
 if ENVIRONMENT == "docker":
     env_file = ".env.docker"
-else:
+if ENVIRONMENT == "local":
     env_file = ".env.local"
+else:
+    env_file = ".env"
 
 # Read the .env file
 environ.Env.read_env(env_file=env_file)
