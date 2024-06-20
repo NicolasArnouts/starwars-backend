@@ -232,6 +232,12 @@ Here are some additional Docker commands that might be useful for managing your 
     docker-compose up --build -d
     ```
 
+- To build without using the cache do:
+
+    ```bash
+    docker-compose build --no-cache
+    ```
+
 - To stop and remove the containers, along with the associated volumes:
 
     ```bash
