@@ -458,7 +458,7 @@
 		},
 		{
 			"key": "django_password",
-			"value": "MY_OWN_PASS",
+			"value": "YOUR_SECRET_PASS",
 			"type": "string"
 		}
 	]
