@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",  # DRF
     "api",  # the DRF api app
+    "django_filters", # for filtering logic
 ]
 
 MIDDLEWARE = [
